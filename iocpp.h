@@ -197,15 +197,15 @@ namespace iocpp
 // Autowire(Type or Interface of Type, Name)
 #define AUTOWIRE2(T, N) iocpp::Autowire<T, iocpp::Hash(N)>
 // Autowire(Type or Interface of Type)
-#define AUTOWIRE_THIS(T) iocpp::AutowireThis<T>(0).bean()
+#define AUTOWIRE_DATA(T) iocpp::AutowireThis<T>(0).bean()
 // Autowire(Type or Interface of Type, Name)
-#define AUTOWIRE2_THIS(T, N) iocpp::AutowireThis<T>(iocpp::Hash(N)).bean()
+#define AUTOWIRE2_DATA(T, N) iocpp::AutowireThis<T>(iocpp::Hash(N)).bean()
 
 // Resource(Type, Name)
 #define RESOURCE(T, N) iocpp::Resource<T, T, iocpp::Hash(N)>
 // Resource(Type, Interface of Type, Name)
 #define RESOURCE2(T, I, N) iocpp::Resource<T, I, iocpp::Hash(N)>
 // Resource(Type, Name)
-#define RESOURCE_THIS(T, N) iocpp::ResourceThis<T, T>(iocpp::Hash(N)).bean()
+#define RESOURCE_DATA(T, N) iocpp::ResourceThis<T, T>(iocpp::Hash(N)).bean()
 // Resource(Type, Interface of Type, Name)
-#define RESOURCE2_THIS(T, I, N) iocpp::ResourceThis<T, I>(iocpp::Hash(N)).bean()
+#define RESOURCE2_DATA(T, I, N) iocpp::ResourceThis<T, I>(iocpp::Hash(N)).bean()

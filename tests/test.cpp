@@ -35,7 +35,7 @@ class Application : public RESOURCE2(Property, IProperty, "myProps") /*Inject Pr
 public:
 	Application()
 	{
-		std::cout << "injected " << (intptr_t)RESOURCE2_THIS(Property, IProperty, "myProps") << std::endl;
+		std::cout << "injected " << (intptr_t)RESOURCE2_DATA(Property, IProperty, "myProps") << std::endl;
 	}
 };
 
@@ -44,9 +44,9 @@ class Service : public AUTOWIRE(IProperty) /*AutoWire Property into Service*/
 public:
 	Service()
 	{
-		std::cout << "autowire " << (intptr_t)AUTOWIRE_THIS(IProperty) << std::endl;
+		std::cout << "autowire " << (intptr_t)AUTOWIRE_DATA(IProperty) << std::endl;
 
-		auto myValue = AUTOWIRE_THIS(IProperty)->get("myKey");
+		auto myValue = AUTOWIRE_DATA(IProperty)->get("myKey");
 	}
 };
 

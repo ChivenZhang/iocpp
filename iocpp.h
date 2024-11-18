@@ -192,20 +192,28 @@ namespace iocpp
 	};
 }
 
-// Autowire(Type or Interface of Type)
+// Autowire(Type or Interface)
 #define AUTOWIRE(T) iocpp::Autowire<T, 0>
-// Autowire(Type or Interface of Type, Name)
-#define AUTOWIRE2(T, N) iocpp::Autowire<T, iocpp::Hash(N)>
-// Autowire(Type or Interface of Type)
+// Autowire(Type or Interface)
 #define AUTOWIRE_DATA(T) iocpp::AutowireThis<T>(0).bean()
-// Autowire(Type or Interface of Type, Name)
-#define AUTOWIRE2_DATA(T, N) iocpp::AutowireThis<T>(iocpp::Hash(N)).bean()
+// Autowire(Type or Interface, Name)
+#define AUTOWIREN(T, N) iocpp::Autowire<T, iocpp::Hash(N)>
+// Autowire(Type or Interface, Name)
+#define AUTOWIREN_DATA(T, N) iocpp::AutowireThis<T>(iocpp::Hash(N)).bean()
 
+// Resource(Type)
+#define RESOURCE(T) iocpp::Resource<T, T, 0>
+// Resource(Type, Interface)
+#define RESOURCE2(T, I) iocpp::Resource<T, I, 0>
 // Resource(Type, Name)
-#define RESOURCE(T, N) iocpp::Resource<T, T, iocpp::Hash(N)>
-// Resource(Type, Interface of Type, Name)
-#define RESOURCE2(T, I, N) iocpp::Resource<T, I, iocpp::Hash(N)>
+#define RESOURCEN(T, N) iocpp::Resource<T, T, iocpp::Hash(N)>
+// Resource(Type, Interface, Name)
+#define RESOURCE2N(T, I, N) iocpp::Resource<T, I, iocpp::Hash(N)>
+// Resource(Type)
+#define RESOURCE_DATA(T) iocpp::ResourceThis<T, T>(0).bean()
+// Resource(Type, Interface)
+#define RESOURCE2_DATA(T, I) iocpp::ResourceThis<T, I>(0).bean()
 // Resource(Type, Name)
-#define RESOURCE_DATA(T, N) iocpp::ResourceThis<T, T>(iocpp::Hash(N)).bean()
-// Resource(Type, Interface of Type, Name)
-#define RESOURCE2_DATA(T, I, N) iocpp::ResourceThis<T, I>(iocpp::Hash(N)).bean()
+#define RESOURCEN_DATA(T, N) iocpp::ResourceThis<T, T>(iocpp::Hash(N)).bean()
+// Resource(Type, Interface, Name)
+#define RESOURCE2N_DATA(T, I, N) iocpp::ResourceThis<T, I>(iocpp::Hash(N)).bean()

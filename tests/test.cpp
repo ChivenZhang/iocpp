@@ -30,12 +30,12 @@ public:
 	}
 };
 
-class Application : public RESOURCE2(Property, IProperty, "myProps") /*Inject Property into Application*/
+class Application : public RESOURCE2(Property, IProperty) /*Inject Property into Application*/
 {
 public:
 	Application()
 	{
-		std::cout << "injected " << (intptr_t)RESOURCE2_DATA(Property, IProperty, "myProps") << std::endl;
+		std::cout << "injected " << (intptr_t)RESOURCE2_DATA(Property, IProperty) << std::endl;
 	}
 };
 

@@ -10,8 +10,11 @@
 * =================================================*/
 #include "iocpp.h"
 
-BeanManager& BeanManager::Instance()
+namespace iocpp
 {
-	static BeanManager s_Instance;
-	return s_Instance;
+	BeanManager& BeanManager::Instance()
+	{
+		static BeanManager s_Instance;
+		return s_Instance;
+	}
 }

@@ -46,7 +46,7 @@ namespace iocpp
 		template<class T, class I, std::enable_if_t<std::is_same_v<T, I>, int> = 0>
 		std::weak_ptr<std::shared_ptr<Bean>> create(uint32_t N = 0)
 		{
-			auto name = ((uint64_t)Hash(typeid(T).name()) << 32) | N;
+			auto name = ((uint64_t)Hash(typeid(I).name()) << 32) | N;
 			auto result = m_Beans[name];
 			if (result == nullptr)
 			{
@@ -56,7 +56,10 @@ namespace iocpp
 			{
 				auto bean = std::make_shared<Bean>();
 				bean->Data = std::make_shared<T>();
-				bean->Cast = [](std::any& src, std::any& dst) { dst = src; };
+				bean->Cast = [](std::any& src, std::any& dst) {
+					if (src.type() == dst.type()) dst = src;
+					else dst = std::shared_ptr<T>();
+					};
 				(*result) = bean;
 			}
 			return result;
@@ -68,17 +71,29 @@ namespace iocpp
 			auto name1 = ((uint64_t)Hash(typeid(I).name()) << 32) | N;
 			auto name2 = ((uint64_t)Hash(typeid(T).name()) << 32) | N;
 			auto name3 = ((uint64_t)Hash(typeid(I).name()) << 32) | 0;
-			auto result = m_Beans[name1];
-			if (result == nullptr)
+			auto result1 = m_Beans[name1];
+			auto result2 = m_Beans[name2];
+			auto result3 = m_Beans[name3];
+			if (result1 || result2)
 			{
-				result = m_Beans[name1] = m_Beans[name2] = std::make_shared<std::shared_ptr<Bean>>();
-				m_Beans.emplace(name3, result);
+				if (result1 == nullptr) result1 = m_Beans[name1] = result2;
+				if (result2 == nullptr) result2 = m_Beans[name2] = result1;
+				if (result3 == nullptr) result3 = m_Beans[name3] = result1;
 			}
+			else
+			{
+				result1 = result2 = m_Beans[name1] = m_Beans[name2] = std::make_shared<std::shared_ptr<Bean>>();
+				if (result3 == nullptr) result3 = m_Beans[name3] = result1;
+			}
+			auto result = result1;
 			if (result->get() == nullptr)
 			{
 				auto bean = std::make_shared<Bean>();
 				bean->Data = std::make_shared<T>();
-				bean->Cast = [](std::any& src, std::any& dst) { dst = std::dynamic_pointer_cast<I>(std::any_cast<std::shared_ptr<T>>(src)); };
+				bean->Cast = [](std::any& src, std::any& dst) {
+					if (src.type() == dst.type()) dst = src;
+					else dst = std::dynamic_pointer_cast<I>(std::any_cast<std::shared_ptr<T>>(src));
+					};
 				(*result) = bean;
 				if (N) (*m_Beans[name3]) = (*result);
 			}
@@ -135,7 +150,7 @@ namespace iocpp
 	protected:
 		T* bean() const
 		{
-			std::any dst;
+			std::any dst = std::shared_ptr<T>();
 			if (m_Bean.lock() == nullptr) return nullptr;
 			if (m_Bean.lock()->get() == nullptr) return nullptr;
 			m_Bean.lock()->get()->Cast(m_Bean.lock()->get()->Data, dst);
@@ -179,7 +194,7 @@ namespace iocpp
 
 		T* bean() const
 		{
-			std::any dst;
+			std::any dst = std::shared_ptr<T>();
 			if (m_Bean.lock() == nullptr) return nullptr;
 			if (m_Bean.lock()->get() == nullptr) return nullptr;
 			m_Bean.lock()->get()->Cast(m_Bean.lock()->get()->Data, dst);

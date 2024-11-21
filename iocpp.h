@@ -18,17 +18,47 @@
 
 namespace iocpp
 {
-	inline constexpr uint32_t Hash(const char* value)
+	inline constexpr uint32_t Hash32(const char* const first, const size_t count) noexcept
 	{
-		uint32_t hash = 0; // From JDK 8
-		if (value == nullptr) return hash;
-		while (*value) hash = hash * 31 + (*value++);
-		return hash;
+		// These FNV-1a utility functions are extremely performance sensitive,
+		// check examples like that in VSO-653642 before making changes.
+		constexpr uint32_t _FNV_offset_basis = 2166136261U;
+		constexpr uint32_t _FNV_prime = 16777619U;
+		auto result = _FNV_offset_basis;
+		// accumulate range [_First, _First + _Count) into partial FNV-1a hash _Val
+		for (size_t i = 0; i < count; ++i)
+		{
+			result ^= (uint32_t)first[i];
+			result *= _FNV_prime;
+		}
+		return result;
 	}
 
-	inline constexpr uint32_t Hash(std::string const& value)
+	inline constexpr uint64_t Hash64(const char* const first, const size_t count) noexcept
 	{
-		return Hash(value.c_str());
+		// These FNV-1a utility functions are extremely performance sensitive,
+		// check examples like that in VSO-653642 before making changes.
+		constexpr uint64_t _FNV_offset_basis = 14695981039346656037ULL;
+		constexpr uint64_t _FNV_prime = 1099511628211ULL;
+		auto result = _FNV_offset_basis;
+		// accumulate range [_First, _First + _Count) into partial FNV-1a hash _Val
+		for (size_t i = 0; i < count; ++i)
+		{
+			result ^= (uint64_t)first[i];
+			result *= _FNV_prime;
+		}
+		return result;
+	}
+
+	inline constexpr uint32_t Hash(const char* value) noexcept
+	{
+		size_t count = 0; for (size_t i = 0; value[i]; ++i) ++count;
+		return Hash32(value, count);
+	}
+
+	inline const uint32_t Hash(std::string const& value) noexcept
+	{
+		return Hash32(value.c_str(), value.size());
 	}
 
 	class Bean
